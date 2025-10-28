@@ -1,4 +1,4 @@
-# 修改说明
+﻿# 修改说明
 
 ## 高亮与选区颜色的调整（`mdmdt.css`，`mdmdt-light.css`，`mdmdt-dark.css`）
 - 搜索命中、鼠标拖拽选中文本、编辑器中的选区高亮，现在全部统一成一套紫色（新增变量 `--color-4-0-c` 控制透明度）。这样无论是查找结果还是 CodeMirror 中的选区，都会呈现一致的紫色色块，符合“用 color-4 系列紫色”的要求。
@@ -11,3 +11,7 @@
 
 ## 内联背景的文字颜色修正（`mdmdt.css`，`mdmdt-dark.css`）
 - 对所有使用了行内 `style="background: …"` 的 `span` 元素统一设置文字颜色为黑色。这确保用户在深色模式下自己加背景色时，文字不会变浅而看不见，同时和浅色模式默认的文字颜色保持一致。
+
+## 源码视图间距更新（`mdmdt.css`、`mdmdt-light.css`、`mdmdt-dark.css`）
+
+* 移除了 `#typora-source .CodeMirror-lines pre` 的**上下内边距**，仅保留 **16px 的左右内边距**，这样在切换到源码模式时就不会再“撑大”行间距。

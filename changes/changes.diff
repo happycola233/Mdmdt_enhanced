@@ -1,5 +1,5 @@
 diff --git a/mdmdt-dark.css b/mdmdt-dark.css
-index 6e5e560..6a92545 100644
+index 6e5e560..3722fc0 100644
 --- a/mdmdt-dark.css
 +++ b/mdmdt-dark.css
 @@ -33,6 +33,7 @@
@@ -65,6 +65,15 @@ index 6e5e560..6a92545 100644
    box-decoration-break: clone;
    -webkit-box-decoration-break: clone;
  }
+@@ -1031,7 +1045,7 @@ span.md-comment {
+ #typora-source .CodeMirror-lines pre {
+   border: none !important;
+   background: var(--bg-color) !important;
+-  padding: 8px 16px !important;
++  padding: 0 16px !important;
+   font-size: 16px !important;
+ }
+ #typora-source .CodeMirror-activeline pre {
 @@ -1398,7 +1412,7 @@ li > .outline-item:hover::before,
    padding: 8px;
  }
@@ -109,12 +118,8 @@ index 6e5e560..6a92545 100644
 +}
 
 
-
-
-
-
 diff --git a/mdmdt-light.css b/mdmdt-light.css
-index 6085497..8fe17be 100644
+index 6085497..5ebc8ec 100644
 --- a/mdmdt-light.css
 +++ b/mdmdt-light.css
 @@ -34,6 +34,7 @@
@@ -181,6 +186,15 @@ index 6085497..8fe17be 100644
    box-decoration-break: clone;
    -webkit-box-decoration-break: clone;
  }
+@@ -1032,7 +1038,7 @@ span.md-comment {
+ #typora-source .CodeMirror-lines pre {
+   border: none !important;
+   background: var(--bg-color) !important;
+-  padding: 8px 16px !important;
++  padding: 0 16px !important;
+   font-size: 16px !important;
+ }
+ #typora-source .CodeMirror-activeline pre {
 @@ -1396,7 +1402,7 @@ li > .outline-item:hover::before,
    padding: 8px;
  }
@@ -226,9 +240,8 @@ index 6085497..8fe17be 100644
 
 
 
-
 diff --git a/mdmdt.css b/mdmdt.css
-index c3e526e..7c7b985 100644
+index c3e526e..bac1b9d 100644
 --- a/mdmdt.css
 +++ b/mdmdt.css
 @@ -34,6 +34,7 @@
@@ -303,6 +316,15 @@ index c3e526e..7c7b985 100644
    box-decoration-break: clone;
    -webkit-box-decoration-break: clone;
  }
+@@ -1032,7 +1046,7 @@ span.md-comment {
+ #typora-source .CodeMirror-lines pre {
+   border: none !important;
+   background: var(--bg-color) !important;
+-  padding: 8px 16px !important;
++  padding: 0 16px !important;
+   font-size: 16px !important;
+ }
+ #typora-source .CodeMirror-activeline pre {
 @@ -1396,7 +1410,7 @@ li > .outline-item:hover::before,
    padding: 8px;
  }
