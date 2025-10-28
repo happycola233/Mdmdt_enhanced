@@ -1,0 +1,193 @@
+1. 请把 mark 字样（即高亮效果）的背景颜色从 rgb(62, 105, 215) 改为 rgb(255, 236, 153)；  有关透明度使用适当形式
+2. 把 “搜索匹配结果选中的背景” 以及 “鼠标选中selection” 改为 color-4 类的紫色（但是有关透明度你要进行优化），我并不理解 --color-4-0-a 和 --color-4-0-b 代表什么含义。
+
+对于以上，mdmdt.css 和 mdmdt-dark.css 和 mdmdt-light.css 请同步进行修改。
+
+• Highlights
+
+  - mdmdt.css:37, mdmdt.css:55, mdmdt.css:258, mdmdt.css:656, mdmdt.css:1400, mdmdt.css:1632, mdmdt.css:2368,
+    mdmdt.css:2372, mdmdt.css:2704: added a new purple overlay variable --color-4-0-c, pointed global selection tokens
+    to it, switched mark to the requested rgba(255,236,153,0.85) with readable text, and retuned both search-hit states
+    to rely on the color-4 family (active uses solid --color-4, passive uses the new translucent blend).
+  - mdmdt-light.css:37, mdmdt-light.css:55, mdmdt-light.css:258, mdmdt-light.css:656, mdmdt-light.css:1400, mdmdt-
+    light.css:1633, mdmdt-light.css:2369, mdmdt-light.css:2373: mirrored the same light-theme adjustments so standard
+    and light bundles stay in sync.
+  - mdmdt-dark.css:36, mdmdt-dark.css:54, mdmdt-dark.css:257, mdmdt-dark.css:655, mdmdt-dark.css:1402, mdmdt-
+    dark.css:1635, mdmdt-dark.css:2372, mdmdt-dark.css:2376: repeated the updates for the dark bundle, bumping the
+    purple overlay opacity for better contrast on dark backgrounds and flipping mark text to the background tone for
+    legibility.
+  - Note: the --color-4-0-a/b/c tokens now represent the same hue at ascending opacity levels (≈15%, 6%, 28% light / 42%
+    dark), so you can tweak translucency centrally if needed.
+
+  Next steps: Reload the Mdmdt theme in your editor to confirm the new highlight and selection colors look right in both
+  standard and dark modes.
+  
+以下是你提供内容的中文翻译（保持技术细节和语气）：
+
+---
+
+### • 高亮调整
+
+* **mdmdt.css**：在第 37、55、258、656、1400、1632、2368、2372、2704 行：
+  新增了一个紫色覆盖变量 `--color-4-0-c`，将全局选区相关的 token 指向该变量；
+  将 `<mark>` 的颜色切换为指定的 `rgba(255,236,153,0.85)`，并确保文字可读；
+  同时重新调整了两种搜索高亮状态，使它们基于 `color-4` 系列颜色：
+
+  * 活跃状态使用不透明的 `--color-4`；
+  * 被动状态使用新的半透明混合色。
+
+* **mdmdt-light.css**：在第 37、55、258、656、1400、1633、2369、2373 行：
+  同步了与标准版一致的浅色主题调整，保持标准版与浅色版配套一致。
+
+* **mdmdt-dark.css**：在第 36、54、257、655、1402、1635、2372、2376 行：
+  对深色主题重复了上述更新；
+  同时提高了紫色覆盖层的不透明度，以改善深色背景下的对比度，
+  并将 `<mark>` 的文字颜色切换为与背景协调的色调，以提升可读性。
+
+* **备注**：
+  现在 `--color-4-0-a/b/c` 代表相同色相的不同透明度等级
+  （大约为亮色模式下 15%、6%、28%，暗色模式下 42%），
+  因此可在一个中心位置统一调整透明度。
+
+---
+
+### 下一步
+
+重新加载编辑器中的 **Mdmdt** 主题，
+检查在标准模式和暗色模式下新的高亮和选区颜色是否显示正确。
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+把 light 模式的代码块背景改为 rgb(245, 245, 245)；   dark 模式的请不要改动，但 mdmdt.css 包含了 light 和 dark，所以此文件中的 light 部分你也需要同步修改。在完成以上操作的时候，务必参考下面的注意内容：
+
+注意：
+- 样式优先级：pre { background: var(--bg-color2) !important; } 在 mdmdt.css 和 mdmdt-light.css 中一直存在，它带着 !important，会覆盖我们额外写在 .md-fences 或其他选择器上的背景色。所以只改 .md-fences 背景无法改变代码块外观。
+- 主题结构：mdmdt.css 是基础样式，Typora 的浅色模式同样引用它。只改 mdmdt-light.css（或翻译为“light 模块”）但不更新 mdmdt.css 的 pre 定义，最终加载时仍会回落到旧的 var(--bg-color2) 配色。
+
+
+• Updates
+
+  - mdmdt.css:56 introduced --codeblock-bg-color with the requested rgb(245, 245, 245) so light mode owns its code-block
+    tone; mdmdt.css:534 now feeds pre from that variable; mdmdt.css:2711 rebinds it to var(--bg-color2) inside the dark
+    media query so dark styling stays untouched.
+  - mdmdt-light.css:56 mirrors the new variable for the dedicated light bundle; mdmdt-light.css:534 likewise routes pre
+    to the shared variable, giving Typora’s light mode the same background.
+  - mdmdt-dark.css:55 defines --codeblock-bg-color: var(--bg-color2) to preserve the original dark block color; mdmdt-
+    dark.css:533 switches the pre rule to the variable without altering the visual result.
+
+  Next steps: 1) Reload/refresh the Mdmdt theme in Typora to confirm the lighter code block background. 2) Glance at a
+  few code blocks in both light and dark modes to verify the contrast feels right.
+  
+  
+  
+  
+  
+  
+  
+  
+
+刚刚对于 light 模式的代码块背景的修复不足，我发现行号那一列的颜色是单独设置的，这个也需要和目标颜色统一才行。同样的，只改light，两个文件要同步修改。
+
+• - mdmdt.css:56 and mdmdt-light.css:56 keep light-mode code blocks unified by holding the new --codeblock-bg-color, and
+    mdmdt.css:553 plus mdmdt-light.css:553 now point the gutter/line-number column at the same variable so the entire
+    block matches rgb(245, 245, 245).
+  - Dark mode remains on var(--bg-color2) via the media-query override, so its gutter tone stays unchanged.
+
+  Next step: reload Typora with the Mdmdt theme and glance at a code block with line numbers in light mode to confirm
+  the gutters blend into the new background.
+  
+  
+  
+  
+  
+
+
+
+对于深色模式，部分内容现在显示效果不佳。==`文本`== 对于前面这种 行内代码加上高亮效果 的部分，在深色模式中，代码的内容文本他是显示为偏白的颜色，在没有==高亮==的时候这是没问题的，因为行内代码本身的背景是rgb(38, 51, 87)，此时代码块的内容显示为偏白的颜色是能够保证对比度的，但是在加了==高亮==后，对比度可读性会变得很差，能否专门针对此问题制定修复？
+
+同样的，只对这个问题进行优化，要确保两个文件同步修改
+
+• - mdmdt.css:2729 and mdmdt-dark.css:259 now detect inline code nested inside a highlight while in dark mode and strip
+    the inline code’s blue background, reusing var(--bg-color) for the text so the yellow mark backdrop keeps strong
+    contrast.
+  - mdmdt.css:56/534 plus mdmdt-light.css:56/534/553 align both the block body and gutter/line-number columns on the
+    new rgb(245, 245, 245) variable --codeblock-bg-color, with mdmdt.css:2711 ensuring dark mode still reverts to the
+    original tone.
+
+  Next step: reload the theme and check an inline ==\code`==` sample in dark mode to confirm the text now reads clearly,
+  then glance at a light-mode code block with line numbers to verify the unified background.
+  
+
+### • 代码与高亮调整
+
+* **mdmdt.css:2729** 与 **mdmdt-dark.css:259**：
+  现在能检测到在深色模式下，**高亮（`<mark>`）内部嵌套的行内代码**（inline code）。
+  当检测到这种情况时，会**去除行内代码的蓝色背景**，并使用 `var(--bg-color)` 作为文字颜色，
+  以确保在黄色高亮背景上仍保持良好的对比度与可读性。
+
+* **mdmdt.css:56/534** 与 **mdmdt-light.css:56/534/553**：
+  对齐了代码块正文部分与行号（gutter/line-number）列的背景色，
+  使用新的变量 `--codeblock-bg-color`，其值为 `rgb(245, 245, 245)`。
+  同时，**mdmdt.css:2711** 确保在深色模式下仍会恢复原本的深色背景调性。
+
+---
+
+### 下一步
+
+重新加载主题（**Mdmdt**），并进行以下验证：
+
+1. 在**深色模式**下，测试一个示例：
+   `==\`code`==`
+   → 确认行内代码文字在高亮背景上可清晰阅读。
+2. 在**浅色模式**下，查看带行号的代码块，
+   → 确认代码区与行号区的背景颜色已经统一。
+
+---
+
+
+
+
+
+
+
+
+
+对于刚刚的操作实现的不错，我现在想要让在浅色模式下检测到这种情况的时候，也去除行内代码的背景，同样的，同步修改两个文件。
+
+• - mdmdt.css:263 and mdmdt-light.css:263 now clear the inline-code background whenever it sits inside a highlight and
+    let the text inherit the mark color, so ==\code`==` in light mode keeps crisp contrast without the old blue overlay.
+
+  Next step: reload Typora in light mode and inspect an inline code snippet wrapped in highlight to confirm the
+  background is gone and the text matches the surrounding highlight color.
+
+
+
+
+
+
+
+为带有行内背景样式的 <span style="background:…">…</span> 的 Markdown 元素，指定其文本颜色始终保持 light 模式的黑色字体颜色（在 dark 模式下），同步修改 mdmdt.css、mdmdt-dark.css 两个文件。
+
+• Changes
+
+  - Added a shared rule in mdmdt.css:270 and mdmdt-dark.css:269 that targets span elements with inline background styles
+    so their text color is forced to #000 !important, keeping them legible in dark mode while matching the light theme’s
+    black text.
+
+  Next
+
+  - Reload the theme or reopen Typora/preview to ensure the updated styling takes effect.

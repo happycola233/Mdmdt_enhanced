@@ -33,6 +33,7 @@
   --color-4: #8250df;
   --color-4-0-a: rgba(130, 80, 223, 0.3);
   --color-4-0-b: rgba(130, 80, 223, 0.12);
+  --color-4-0-c: rgba(130, 80, 223, 0.42);
 
   --color-5: #e30f2e;
   --color-5-0-a: rgba(227, 15, 46, 0.3);
@@ -50,7 +51,8 @@
   --side-bar-bg-color: var(--bg-color);
   --item-hover-bg-color: var(--bg-color2);
   --item-hover-text-color: var(--color-1);
-  --select-text-bg-color: var(--color-1-0-a);
+  --select-text-bg-color: var(--color-4-0-c);
+  --codeblock-bg-color: var(--bg-color2);
   --monospace: "JetBrains Mono", "Source Code Pro", "Fira Code", Consolas, Inconsolata, "Cascadia Code", Monaco, "Ubuntu Mono", monospace;
 
   --mermaid-theme: dark; /*or base, dark, forest, neutral, night */
@@ -253,11 +255,23 @@ del {
 
 mark {
   border-radius: 5px;
-  background-color: var(--color-1);
+  background-color: rgba(255, 236, 153, 0.85);
   padding: 0 4px;
-  color: rgb(250, 250, 250);
+  color: var(--bg-color);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+}
+mark code {
+  background: transparent;
+  color: var(--bg-color);
+}
+
+/* Keep inline background spans readable when themes switch */
+#write span[style*="background"],
+#write span[style*="background-color"],
+.typora-export-content span[style*="background"],
+.typora-export-content span[style*="background-color"] {
+  color: #000 !important;
 }
 
 /*
@@ -528,7 +542,7 @@ pre {
   margin-top: 16px;
   margin-bottom: 0;
   box-sizing: border-box;
-  background: var(--bg-color2) !important;
+  background: var(--codeblock-bg-color) !important;
   border-radius: 8px;
   font-size: 14px !important;
   color: var(--text-code);
@@ -651,7 +665,7 @@ kbd {
   color: rgb(250, 250, 250);
 }
 ::selection {
-  background: var(--color-2-0-c);
+  background: var(--color-4-0-c);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
@@ -1398,7 +1412,7 @@ li > .outline-item:hover::before,
   padding: 8px;
 }
 .ty-file-search-match-text {
-  background-color: var(--color-2-0-c);
+  background-color: var(--color-4-0-c);
 }
 
 /*
@@ -1631,7 +1645,7 @@ li > .outline-item:hover::before,
 .cm-s-inner .CodeMirror-line::-moz-selection,
 .cm-s-inner .CodeMirror-line > span::-moz-selection,
 .cm-s-inner .CodeMirror-line > span > span::-moz-selection {
-  background: var(--color-2-0-c);
+  background: var(--color-4-0-c);
 }
 .cm-s-inner .CodeMirror-activeline-background { background: transparent; }
 .cm-s-inner .cm-keyword { color: #bb59fd; }
@@ -2368,12 +2382,12 @@ footer.ty-footer,
   color: var(--color-2);
 }
 .md-search-hit {
-  background: var(--color-2-0-c) !important;
-  color: #070909 !important;
+  background: var(--color-4-0-c) !important;
+  color: var(--title-color) !important;
 }
 .md-search-select {
-  background: var(--color-2) !important;
-  color: #070909 !important;
+  background: var(--color-4) !important;
+  color: rgb(250, 250, 250) !important;
 }
 
 /* md-notification-container */
