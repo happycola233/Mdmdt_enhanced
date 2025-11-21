@@ -367,8 +367,14 @@ blockquote > ol,
 ul {
   padding-left: 36px;
 }
+#write ul > li {
+  padding-left: 4px;
+}
 ol {
   padding-left: 40px;
+}
+#write ol > li {
+  padding-left: 4px;
 }
 ol ol {
   margin-left: -7px;
@@ -380,10 +386,10 @@ ul > li > ol {
   margin-left: -2px;
 }
 ul > li > p {
-  margin: 0 0 0 -2px;
+  margin: 0;
 }
 ol > li > p {
-  margin: 0 0 0 -6px;
+  margin: 0;
 }
 ul > .task-list-item > input {
   margin-left: -22px;
@@ -1692,9 +1698,17 @@ li > .outline-item:hover::before,
 .typora-export #write ul {
   padding-left: 34px;
 }
+.unibody-window #write ul > li,
+.typora-export #write ul > li {
+  padding-left: 4px;
+}
 .unibody-window #write ol,
 .typora-export #write ol {
   padding-left: 36px;
+}
+.unibody-window #write ol > li,
+.typora-export #write ol > li {
+  padding-left: 4px;
 }
 .unibody-window #write ul ul,
 .unibody-window #write ol ol,
@@ -1711,7 +1725,7 @@ li > .outline-item:hover::before,
 }
 .unibody-window #write ol > li > p,
 .typora-export #write ol > li > p {
-  margin: 0 0 0 -2px;
+  margin: 0;
 }
 .unibody-window #write ul > .task-list-item > input,
 .typora-export #write ul > .task-list-item > input {

@@ -14,4 +14,9 @@
 
 ## 源码视图间距更新（`mdmdt.css`、`mdmdt-light.css`、`mdmdt-dark.css`）
 
-* 移除了 `#typora-source .CodeMirror-lines pre` 的**上下内边距**，仅保留 **16px 的左右内边距**，这样在切换到源码模式时就不会再“撑大”行间距。
+- 移除了 `#typora-source .CodeMirror-lines pre` 的**上下内边距**，仅保留 **16px 的左右内边距**，这样在切换到源码模式时就不会再“撑大”行间距。
+
+## 列表项的左侧间距调整（`mdmdt.css` / `mdmdt-light.css` / `mdmdt-dark.css`）
+
+- 无序列表、任务列表统一为 4px 左内边距，并移除列表项内段落的负 margin，保证列表标记与内容的间距与有序列表一致。
+- 导出/无边框模式下同步新增列表项内边距规则，保持不同视图中的缩进一致性。
