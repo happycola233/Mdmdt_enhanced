@@ -347,6 +347,24 @@ a:hover {
 .footnotes .md-def-name::after {
   color: var(--text-color);
 }
+/* Tighten Typora's default reference-link label spacing. */
+.footnotes.md-def-link .md-def-name:not(:empty) {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: left;
+  letter-spacing: 0;
+}
+.footnotes.md-def-link .md-def-name:not(:empty)::before,
+.footnotes.md-def-link .md-def-name:not(:empty)::after {
+  position: static;
+}
+.footnotes.md-def-link .md-def-name:not(:empty)::before {
+  margin-right: 0.3ch;
+}
+.footnotes.md-def-link .md-def-name:not(:empty)::after {
+  content: "]:";
+  margin-left: 0.3ch;
+}
 .footnotes .md-def-url,
 .md-link .md-url {
   text-decoration: none;
