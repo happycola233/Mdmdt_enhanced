@@ -2488,8 +2488,19 @@ footer.ty-footer,
   border-color: transparent !important;
   background: var(--bg-color2);
 }
+.md-diagram.md-fences[lang="mermaid"]:not(.md-focus) {
+  background: transparent !important;
+}
+.md-diagram.md-fences[lang="mermaid"]:not(.md-focus) .md-diagram-panel {
+  background: transparent;
+}
+.md-diagram.md-fences[lang="mermaid"]:not(.md-focus) > .CodeMirror {
+  background: var(--codeblock-bg-color) !important;
+  border-radius: 8px;
+}
 pre.md-focus .md-diagram-panel {
   margin-top: 4px;
+  background: var(--bg-color2);
 }
 
 /*
