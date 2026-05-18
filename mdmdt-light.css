@@ -9,7 +9,7 @@
 */
 :root {
   /*--bg-color: rgb(250, 250, 250);*/
-  --bg-color: rgb(250, 250, 252);
+  --bg-color: #ffffff;
   --bg-color2: rgb(236, 236, 238);
 
   --text-color: #000;
@@ -2896,6 +2896,7 @@ body.typora-export {
 @media print {
   html,
   body,
+  body.typora-export,
   body #write,
   body content,
   body .typora-export-content {
@@ -2905,6 +2906,17 @@ body.typora-export {
     height: auto !important; /*解决浏览器打印只有一页问题*/
     padding: 0 !important;
     border: none !important;
+    background: var(--bg-color) !important;
+  }
+  .typora-export,
+  .typora-export .typora-export-content,
+  .typora-export #write {
+    background: var(--bg-color) !important;
+  }
+  .typora-export,
+  .typora-export * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
   body .typora-export-sidebar {
     display: none !important;
@@ -2956,13 +2968,72 @@ body.typora-export {
     margin: 15mm !important;
     size: auto;
     /*谷歌浏览器打印设置*/
+    @top-left-corner {
+      content: '';
+      background: var(--bg-color);
+    }
+    @top-left {
+      content: '';
+      background: var(--bg-color);
+    }
     @top-center {
       content: '';
+      background: var(--bg-color);
       font-size: 9pt;
+    }
+    @top-right {
+      content: '';
+      background: var(--bg-color);
+    }
+    @top-right-corner {
+      content: '';
+      background: var(--bg-color);
+    }
+    @right-top {
+      content: '';
+      background: var(--bg-color);
+    }
+    @right-middle {
+      content: '';
+      background: var(--bg-color);
+    }
+    @right-bottom {
+      content: '';
+      background: var(--bg-color);
+    }
+    @bottom-right-corner {
+      content: '';
+      background: var(--bg-color);
+    }
+    @bottom-right {
+      content: '';
+      background: var(--bg-color);
     }
     @bottom-center {
       content: counter(page) '/' counter(pages);
+      background: var(--bg-color);
+      color: var(--text-color);
       font-size: 9pt;
+    }
+    @bottom-left {
+      content: '';
+      background: var(--bg-color);
+    }
+    @bottom-left-corner {
+      content: '';
+      background: var(--bg-color);
+    }
+    @left-bottom {
+      content: '';
+      background: var(--bg-color);
+    }
+    @left-middle {
+      content: '';
+      background: var(--bg-color);
+    }
+    @left-top {
+      content: '';
+      background: var(--bg-color);
     }
   }
 }
