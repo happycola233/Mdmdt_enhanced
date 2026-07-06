@@ -370,6 +370,49 @@ a:hover {
   text-decoration: none;
   color: var(--color-1);
 }
+/* Footnote definitions: render "[^1]:" as an ordered-list style "1." */
+.footnotes.md-def-footnote {
+  padding-left: 1.4em;
+  text-indent: -1.4em;
+}
+.footnotes.md-def-footnote .md-def-name,
+.footnotes.md-def-footnote .md-def-split,
+.footnotes.md-def-footnote .md-def-content {
+  text-indent: 0;
+}
+.footnotes.md-def-footnote .md-def-name:not(:empty) {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: left;
+  letter-spacing: 0;
+  font-weight: normal;
+}
+.footnotes.md-def-footnote .md-def-name:not(:empty)::before {
+  content: none;
+}
+.footnotes.md-def-footnote .md-def-name:not(:empty)::after {
+  content: ".";
+  position: static;
+}
+/* Footnotes area in exported HTML/PDF: match the in-editor look. */
+.footnotes-area {
+  color: var(--text-color);
+  font-size: 14px;
+}
+.footnotes-area a {
+  font-size: 14px;
+}
+.footnotes-area .footnote-line {
+  font-size: inherit;
+  padding-left: 1.4em;
+  text-indent: -1.4em;
+}
+.footnotes-area .footnote-line > * {
+  text-indent: 0;
+}
+.footnote-line a:not(.reversefootnote) {
+  color: var(--color-1);
+}
 
 /*
  * ------------------------
@@ -673,6 +716,31 @@ sup.md-footnote {
 sup.md-footnote:hover {
   color: var(--color-2);
   cursor: pointer;
+}
+sup.md-footnote a {
+  font-size: inherit;
+}
+/* Footnote references: render "1" as "[1]" */
+sup.md-footnote::before {
+  content: "[";
+}
+sup.md-footnote::after {
+  content: "]";
+}
+/* Hide the brackets whenever Typora expands the raw "[^1]" syntax */
+sup.md-footnote.md-expand::before,
+sup.md-footnote.md-expand::after,
+.md-expand sup.md-footnote::before,
+.md-expand sup.md-footnote::after,
+sup.md-footnote.md-expand-on-selection::before,
+sup.md-footnote.md-expand-on-selection::after,
+.md-expand-on-selection sup.md-footnote::before,
+.md-expand-on-selection sup.md-footnote::after,
+sup.md-footnote.md-empty::before,
+sup.md-footnote.md-empty::after,
+sup.md-footnote.md-search-expand::before,
+sup.md-footnote.md-search-expand::after {
+  content: none;
 }
 kbd {
   display: inline-block;
