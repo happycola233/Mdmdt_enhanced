@@ -335,6 +335,13 @@ a.reversefootnote::before,
   height: 0 !important;
   background-image: none !important;
 }
+/* 包裹图片的链接（如 README 徽章）不显示链接图标，与 GitHub 一致 */
+#write a:has(img) {
+  padding-left: 0 !important;
+}
+#write a:has(img)::before {
+  display: none !important;
+}
 a:hover {
   color: var(--color-2);
 }
@@ -488,7 +495,13 @@ li > p {
  * image
  * ------------------------
 */
-img,
+/*
+ * 原始 HTML 块里的图片按作者写法渲染（GitHub 不额外加外边距和圆角），
+ * 避免徽章被撑开、变成圆角胶囊，也让 width / style 等内联写法生效；
+ * <section> 图片网格保留原有圆角。
+ */
+img:where(:not(.md-htmlblock-container img)),
+.md-htmlblock-container section img,
 span.md-image {
   margin: 16px auto 0 auto !important;
   border-radius: 8px !important;
@@ -1243,6 +1256,58 @@ body.typora-node #write > .md-htmlblock:has(details) + blockquote + blockquote +
 body.typora-node #write > .md-htmlblock:has(details) + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + p:has(> .md-tag.md-raw-inline:only-child),
 body.typora-node #write > .md-htmlblock:has(details) + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + p:has(> .md-tag.md-raw-inline:only-child),
 body.typora-node #write > .md-htmlblock:has(details) + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + blockquote + p:has(> .md-tag.md-raw-inline:only-child) {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  max-height: 0 !important;
+  min-height: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/*
+ * ------------------------
+ * raw HTML（对齐 GitHub 渲染）
+ * ------------------------
+*/
+/*
+ * 原始 HTML 遵循 HTML 的空白规则：源码里的换行和缩进只是空白，GitHub 会把它们折叠。
+ * 主题给 p / td / th 强制了 pre-wrap，Typora 基础样式也给 h1-h5 设了 pre-wrap，
+ * 导致 <p> 里逐行书写的徽章、链接被拆成一行一个，这里在 HTML 块内恢复为 normal。
+ */
+#write .md-htmlblock-container :is(p, h1, h2, h3, h4, h5, h6, td, th) {
+  white-space: normal !important;
+}
+/* 原始 HTML 表格按内容宽度排版（GitHub 同样不会把它拉满），<table align="center"> 才能真正居中；写了 width 属性的表格保持原样 */
+.md-htmlblock-container table:not([width]) {
+  width: auto;
+}
+/*
+ * Typora 遇到空行就结束 HTML 块，README 常见的
+ *   <div align="center">  +  空行  +  若干块  +  </div>
+ * 会被拆成：只含空 <div align="center"> 的 HTML 块（开）、中间的兄弟块、只含 </div> 原始标签的段落（闭）。
+ * 用兄弟选择器把“最近一个标记是开标记”的块视为居中区域内容，模拟 GitHub 的 align="center"。
+ * 选择器按“开/闭交替序列”的长度判断，最多支持每篇文档 4 个这样的区域；代码块、公式块保持左对齐。
+ */
+#write > [mdtype]:not([mdtype="fences"], [mdtype="math_block"], [mdtype="toc"]):is(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ *):not(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ *),
+#write > [mdtype]:not([mdtype="fences"], [mdtype="math_block"], [mdtype="toc"]):is(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ *):not(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ *),
+#write > [mdtype]:not([mdtype="fences"], [mdtype="math_block"], [mdtype="toc"]):is(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ *):not(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ *),
+#write > [mdtype]:not([mdtype="fences"], [mdtype="math_block"], [mdtype="toc"]):is(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ *):not(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ *) {
+  text-align: -webkit-center;
+}
+#write .md-htmlblock-panel {
+  text-align: left;
+}
+/* 区域末尾的 </div> 原始标签在 GitHub 上不可见；光标移入时（md-focus）恢复显示以便编辑 */
+body.typora-node #write > .md-p:has(> [md-inline="tag"]:only-child):is(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ *):not(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ *):not(.md-focus),
+body.typora-node #write > .md-p:has(> [md-inline="tag"]:only-child):is(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ *):not(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ *):not(.md-focus),
+body.typora-node #write > .md-p:has(> [md-inline="tag"]:only-child):is(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ *):not(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ *):not(.md-focus),
+body.typora-node #write > .md-p:has(> [md-inline="tag"]:only-child):is(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ *):not(.md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ .md-htmlblock:has(> .md-htmlblock-container > :is(div[align="center" i], center):only-child:empty) ~ .md-p:has(> [md-inline="tag"]:only-child) ~ *):not(.md-focus) {
   position: absolute !important;
   left: 0 !important;
   right: 0 !important;

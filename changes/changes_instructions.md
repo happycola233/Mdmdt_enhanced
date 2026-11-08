@@ -27,3 +27,12 @@
 - 编辑器中的脚注定义行不再显示原始的 `[^1] :` 标记（此前 `^` 会裸露显示且间距怪异），改为有序列表风格的 `1.` 序号：去掉 `[^` 伪元素、`] :` 改为 `.`，序号左对齐、取消加粗，并为整行加悬挂缩进，折行后与内容对齐。仅作用于 `.md-def-footnote`，引用式链接定义（`[label]: url`）样式保持不变；脚注名为空时保留 Typora 原生的输入占位提示。
 - 导出 HTML/PDF 的脚注区域（`.footnotes-area`）同步优化：字号统一为 14px（原默认 0.7em 过小），文字颜色跟随主题正文色（不再是固定灰色 #888），脚注内容中的链接使用主题链接色，并应用与编辑器一致的悬挂缩进。
 - 修正导出时脚注引用数字继承全局 16px 链接字号导致偏大的问题（`sup.md-footnote a` 改为继承上标字号）。
+
+## 原始 HTML 向 GitHub 渲染效果对齐（`mdmdt.css`、`mdmdt-light.css`、`mdmdt-dark.css`）
+
+- 原始 HTML 块里的 `<p>` / `<td>` / `<th>` / `<h1>`~`<h6>` 改回 `white-space: normal`。此前主题对 `p`、`td`、`th` 强制了 `pre-wrap`（Typora 基础样式对标题也是 `pre-wrap`），导致 README 中按行书写的徽章、链接在 Typora 里被拆成一行一个、还带着源码缩进；GitHub 会把这些换行和缩进折叠成普通空白。
+- Typora 遇到空行就会结束 HTML 块，README 常见的 `<div align="center">` + 空行 + 若干块 + `</div>` 会被拆成兄弟块，居中失效。现在用兄弟选择器识别“只含空 `<div align="center">` / `<center>` 的 HTML 块”（开）与“只含一个原始标签的段落”（闭，如 `</div>`），把两者之间的块按 `text-align: -webkit-center` 居中（与浏览器处理 `align="center"` 的方式一致），代码块、公式块保持左对齐；每篇文档最多支持 4 个这样的区域。区域末尾的 `</div>` 原始标签默认隐藏，光标移入时恢复显示以便编辑。不含空行、自身闭合的 `<div align="center">…</div>` 本来就能正常居中，不受影响。
+- 原始 HTML 块里的图片不再被主题强加 `16px` 上外边距和 `8px` 圆角，按作者写法渲染（徽章保持 `flat-square` 直角、内联 `style`/`width` 可生效）；`<section>` 图片网格和 Markdown 图片保持原样。
+- 包裹图片的链接（如徽章 `<a><img></a>`、`[![badge](…)](…)`）不再显示主题的链接小图标；纯文字链接的图标保持不变。
+- 原始 HTML 表格（未写 `width` 属性时）按内容宽度排版，`<table align="center">` 可以真正居中，与 GitHub 一致。
+- 以上仅作用于编辑视图：Typora 导出 HTML/PDF 时原始 HTML 不带任何包裹元素，无法与 Markdown 段落区分，导出效果保持不变。
