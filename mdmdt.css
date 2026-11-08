@@ -39,6 +39,15 @@
   --color-5: #e30f2e;
   --color-5-0-a: rgba(227, 15, 46, 0.15);
   --color-5-0-b: rgba(227, 15, 46, 0.06);
+  /* 引用与提示块（与 GitHub 配色一致） */
+  --link-color: #0969da;
+  --quote-text-color: #59636e;
+  --quote-border-color: #d1d9e0;
+  --alert-note-color: #0969da;
+  --alert-tip-color: #1a7f37;
+  --alert-important-color: #8250df;
+  --alert-warning-color: #9a6700;
+  --alert-caution-color: #d1242f;
 
   --md-char-color: rgba(72, 93, 108, 0.75);
   --meta-content-color: var(--md-char-color);
@@ -78,14 +87,15 @@ body {
   padding: 0;
   font-size: 16px;
   line-height: 1.6;
-  letter-spacing: 0.6px;
+  /* 正文字距：GitHub 为 0，中文完全不加略显拥挤，取 0.8px */
+  letter-spacing: 0.8px;
   font-family: "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", Arial, "Helvetica Neue", Helvetica, sans-serif;
   background: var(--bg-color);
   overflow-x: hidden;
 }
 body.os-windows {
   font-family: "Microsoft YaHei UI", "Microsoft YaHei", Arial, "Helvetica Neue", Helvetica, sans-serif;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
 }
 * {
   tab-size: 4;
@@ -130,7 +140,9 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.5;
   margin: 32px 0 18px;
   color: var(--title-color);
-  letter-spacing: 2px;
+  /* 与 GitHub 一致：字重 600（微软雅黑显示为粗体），不额外加字距，避免标题显得发虚 */
+  font-weight: 600;
+  letter-spacing: normal;
 }
 h1 {
   font-size: 32px;
@@ -217,8 +229,18 @@ h6 { font-size: 16px; }
 hr {
   height: 1px;
   box-sizing: border-box;
+  margin: 24px 0;
   background: var(--border-color);
   border: none;
+}
+/*
+ * 分隔线上下等距（与 GitHub 一样各 24px）。段落的 -5px 下外边距会和分隔线的上外边距折叠，
+ * 此前分隔线上方只剩约 3px、下方 16px，看起来不居中；这里把分隔线前一个段落的下外边距归零。
+ * Typora 编辑区里分隔线外面包着 div.md-hr，导出时是裸 <hr>。
+ */
+#write > p:has(+ .md-hr),
+#write > p:has(+ hr) {
+  margin-bottom: 0;
 }
 
 p {
@@ -226,11 +248,23 @@ p {
   margin-bottom: -5px;
   white-space: pre-wrap !important;
 }
+/*
+ * 开启 Typora「忽略连续的空格与单个换行」（编辑 → 空格与换行 → 取消「保留单换行符」）后，
+ * 段落内的单个换行按 GitHub 规则显示为空格（如 README 里逐行书写的徽章排成一行），不能被上面的 pre-wrap 覆盖。
+ */
+body.ignore-line-break #write p.md-p {
+  white-space: normal !important;
+}
 #write > p + p {
   margin-top: 24px;
 }
-p:has(span.md-image) {
-  margin-bottom: 0;
+/*
+ * 只有一张图片的段落：图片顶对齐，去掉行内基线下方的留白，并沿用普通段落的外边距，
+ * 使图片与上下文字的距离相同（约 19px，与两段文字之间的距离一致）。图片和文字混排时不受影响。
+ */
+p:has(> span.md-image:only-child) > span.md-image,
+p:has(> span.md-image:only-child) > span.md-image > img {
+  vertical-align: top;
 }
 
 strong {
@@ -295,35 +329,6 @@ a:hover,
   text-decoration: underline;
   cursor: pointer !important;
 }
-/*以下写法是防止导出pdf时再标题或代码块部分生成链接图标*/
-#write p a,
-#write table a,
-#write blockquote a,
-#write .md-alert a,
-#write li a {
-  padding-left: 2px;
-}
-#write p a::before,
-#write table a::before,
-#write blockquote a::before,
-#write .md-alert a::before,
-#write li a::before {
-  content: "";
-  display: inline-block;
-  position: relative;
-  top: 2px;
-  right: 2px;
-  z-index: 30;
-  width: 14px;
-  height: 14px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100%;
-  background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzQxNDk2OTA4OTA2IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjE1NjgiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHBhdGggZD0iTTIyNy44NCAyMS41MDRjLTQxLjQ3MiA3LjY4LTk3LjI4IDM3Ljg4OC0xMzAuMDQ4IDcwLjY1NkM0Ny42MTYgMTQyLjg0OCAyMC40OCAyMDcuMzYgMjAuNDggMjc2Ljk5MmMwIDc1Ljc3NiAxOC45NDQgMTIzLjM5MiA3Ni4yODggMTkzLjAyNCAzMC4yMDggMzUuODQgMTA1Ljk4NCAxMDguNTQ0IDExNy4yNDggMTEyLjY0IDIuNTYgMC41MTIgNi42NTYtMTQuMzM2IDguNzA0LTMzLjI4IDIuMDQ4LTE4Ljk0NCA3LjY4LTQ4LjEyOCAxMy4zMTItNjQgMTUuODcyLTQ4LjEyOCAxNC4zMzYtNTMuNzYtMjYuNjI0LTkzLjY5NkMxNjQuODY0IDM0Ny42NDggMTQ4LjQ4IDMxNS4zOTIgMTQ4LjQ4IDI3My40MDhjMC05OC44MTYgMTAzLjQyNC0xNjEuMjggMTg1Ljg1Ni0xMTMuMTUyIDExLjc3NiA3LjE2OCA3MS4xNjggNjMuNDg4IDEzMi42MDggMTI0LjkyOCAxMjAuODMyIDEyMS44NTYgMTIwLjMyIDEyMS4zNDQgMTE1LjcxMiAxNzcuMTUyLTEuNTM2IDE5LjQ1Ni03LjY4IDM0LjgxNi0yMC45OTIgNTUuODA4LTIyLjAxNiAzNC4zMDQtMjUuMDg4IDYyLjk3Ni04LjcwNCA4OS42IDEyLjI4OCAyMC40OCAyNS42IDI3LjY0OCA1My4yNDggMjguNjcyIDMyLjc2OCAxLjUzNiA1NC4yNzItMTUuODcyIDc4Ljg0OC02Mi45NzYgMjQuNTc2LTQ2LjU5MiAzMi4yNTYtNzYuOCAzMi4yNTYtMTI2LjQ2NCAwLTUzLjc2LTE1Ljg3Mi0xMDAuODY0LTUyLjIyNC0xNTUuMTM2LTIwLjk5Mi0zMC43Mi0xNjIuODE2LTE3My41NjgtMjEwLjk0NC0yMTEuOTY4QzM4NS41MzYgMjUuMDg4IDMxMC4yNzIgNS42MzIgMjI3Ljg0IDIxLjUwNHoiIGZpbGw9IiMzZTY5ZDciIHAtaWQ9IjE1NjkiPjwvcGF0aD48cGF0aCBkPSJNMzkxLjY4IDM5MS42OGMtMjQuMDY0IDExLjI2NC0zMS4yMzIgMTguNDMyLTUxLjIgNTUuMjk2LTI0LjA2NCA0NC4wMzItMzMuMjggNzguMzM2LTMzLjc5MiAxMjggMCA1NS4yOTYgMTUuMzYgMTAxLjg4OCA1Mi4yMjQgMTU3LjE4NCAyMS41MDQgMzIuMjU2IDE3Ny4xNTIgMTg2Ljg4IDIxOS42NDggMjE5LjEzNiAzOS40MjQgMjkuMTg0IDc4LjMzNiA0Ni4wOCAxMjQuNDE2IDUzLjI0OCAxNTcuMTg0IDI0LjA2NCAzMDAuNTQ0LTk4LjgxNiAzMDAuNTQ0LTI1Ny41MzYgMC03NS43NzYtMTguOTQ0LTEyMy4zOTItNzYuMjg4LTE5My4wMjQtMzAuMjA4LTM1Ljg0LTEwNS45ODQtMTA4LjU0NC0xMTcuMjQ4LTExMi42NC0yLjU2LTAuNTEyLTYuNjU2IDE0LjMzNi04LjcwNCAzMy4yOC0yLjA0OCAxOC45NDQtNy42OCA0OC4xMjgtMTMuMzEyIDY0LTE1Ljg3MiA0OC4xMjgtMTQuMzM2IDUzLjc2IDI2LjYyNCA5My42OTYgNDQuNTQ0IDQ0LjAzMiA2MC45MjggNzYuMjg4IDYwLjkyOCAxMTguMjcyIDAgOTguODE2LTEwMy40MjQgMTYxLjI4LTE4NS44NTYgMTEzLjE1Mi0xMS43NzYtNy4xNjgtNzEuMTY4LTYzLjQ4OC0xMzIuNjA4LTEyNC45MjgtMTIwLjgzMi0xMjEuODU2LTEyMC4zMi0xMjEuMzQ0LTExNS43MTItMTc3LjE1MiAxLjUzNi0xOS40NTYgNy42OC0zNC44MTYgMjAuOTkyLTU1LjgwOCAxNC4zMzYtMjIuMDE2IDE4Ljk0NC0zNC4zMDQgMTguOTQ0LTUxLjIgMC0yMy41NTItMTMuODI0LTUxLjItMjkuMTg0LTU5LjM5Mi0xNy45Mi05LjIxNi00NS4wNTYtMTAuNzUyLTYwLjQxNi0zLjU4NHoiIGZpbGw9IiMzZTY5ZDciIHAtaWQ9IjE1NzAiPjwvcGF0aD48L3N2Zz4=");
-}
-#write a:hover::before {
-  background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzQxNDk3MDE4MTgyIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjExMDciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHBhdGggZD0iTTIyNy44NCAyMS41MDRjLTQxLjQ3MiA3LjY4LTk3LjI4IDM3Ljg4OC0xMzAuMDQ4IDcwLjY1NkM0Ny42MTYgMTQyLjg0OCAyMC40OCAyMDcuMzYgMjAuNDggMjc2Ljk5MmMwIDc1Ljc3NiAxOC45NDQgMTIzLjM5MiA3Ni4yODggMTkzLjAyNCAzMC4yMDggMzUuODQgMTA1Ljk4NCAxMDguNTQ0IDExNy4yNDggMTEyLjY0IDIuNTYgMC41MTIgNi42NTYtMTQuMzM2IDguNzA0LTMzLjI4IDIuMDQ4LTE4Ljk0NCA3LjY4LTQ4LjEyOCAxMy4zMTItNjQgMTUuODcyLTQ4LjEyOCAxNC4zMzYtNTMuNzYtMjYuNjI0LTkzLjY5NkMxNjQuODY0IDM0Ny42NDggMTQ4LjQ4IDMxNS4zOTIgMTQ4LjQ4IDI3My40MDhjMC05OC44MTYgMTAzLjQyNC0xNjEuMjggMTg1Ljg1Ni0xMTMuMTUyIDExLjc3NiA3LjE2OCA3MS4xNjggNjMuNDg4IDEzMi42MDggMTI0LjkyOCAxMjAuODMyIDEyMS44NTYgMTIwLjMyIDEyMS4zNDQgMTE1LjcxMiAxNzcuMTUyLTEuNTM2IDE5LjQ1Ni03LjY4IDM0LjgxNi0yMC45OTIgNTUuODA4LTIyLjAxNiAzNC4zMDQtMjUuMDg4IDYyLjk3Ni04LjcwNCA4OS42IDEyLjI4OCAyMC40OCAyNS42IDI3LjY0OCA1My4yNDggMjguNjcyIDMyLjc2OCAxLjUzNiA1NC4yNzItMTUuODcyIDc4Ljg0OC02Mi45NzYgMjQuNTc2LTQ2LjU5MiAzMi4yNTYtNzYuOCAzMi4yNTYtMTI2LjQ2NCAwLTUzLjc2LTE1Ljg3Mi0xMDAuODY0LTUyLjIyNC0xNTUuMTM2LTIwLjk5Mi0zMC43Mi0xNjIuODE2LTE3My41NjgtMjEwLjk0NC0yMTEuOTY4QzM4NS41MzYgMjUuMDg4IDMxMC4yNzIgNS42MzIgMjI3Ljg0IDIxLjUwNHoiIGZpbGw9IiNmNTkxMDIiIHAtaWQ9IjExMDgiPjwvcGF0aD48cGF0aCBkPSJNMzkxLjY4IDM5MS42OGMtMjQuMDY0IDExLjI2NC0zMS4yMzIgMTguNDMyLTUxLjIgNTUuMjk2LTI0LjA2NCA0NC4wMzItMzMuMjggNzguMzM2LTMzLjc5MiAxMjggMCA1NS4yOTYgMTUuMzYgMTAxLjg4OCA1Mi4yMjQgMTU3LjE4NCAyMS41MDQgMzIuMjU2IDE3Ny4xNTIgMTg2Ljg4IDIxOS42NDggMjE5LjEzNiAzOS40MjQgMjkuMTg0IDc4LjMzNiA0Ni4wOCAxMjQuNDE2IDUzLjI0OCAxNTcuMTg0IDI0LjA2NCAzMDAuNTQ0LTk4LjgxNiAzMDAuNTQ0LTI1Ny41MzYgMC03NS43NzYtMTguOTQ0LTEyMy4zOTItNzYuMjg4LTE5My4wMjQtMzAuMjA4LTM1Ljg0LTEwNS45ODQtMTA4LjU0NC0xMTcuMjQ4LTExMi42NC0yLjU2LTAuNTEyLTYuNjU2IDE0LjMzNi04LjcwNCAzMy4yOC0yLjA0OCAxOC45NDQtNy42OCA0OC4xMjgtMTMuMzEyIDY0LTE1Ljg3MiA0OC4xMjgtMTQuMzM2IDUzLjc2IDI2LjYyNCA5My42OTYgNDQuNTQ0IDQ0LjAzMiA2MC45MjggNzYuMjg4IDYwLjkyOCAxMTguMjcyIDAgOTguODE2LTEwMy40MjQgMTYxLjI4LTE4NS44NTYgMTEzLjE1Mi0xMS43NzYtNy4xNjgtNzEuMTY4LTYzLjQ4OC0xMzIuNjA4LTEyNC45MjgtMTIwLjgzMi0xMjEuODU2LTEyMC4zMi0xMjEuMzQ0LTExNS43MTItMTc3LjE1MiAxLjUzNi0xOS40NTYgNy42OC0zNC44MTYgMjAuOTkyLTU1LjgwOCAxNC4zMzYtMjIuMDE2IDE4Ljk0NC0zNC4zMDQgMTguOTQ0LTUxLjIgMC0yMy41NTItMTMuODI0LTUxLjItMjkuMTg0LTU5LjM5Mi0xNy45Mi05LjIxNi00NS4wNTYtMTAuNzUyLTYwLjQxNi0zLjU4NHoiIGZpbGw9IiNmNTkxMDIiIHAtaWQ9IjExMDkiPjwvcGF0aD48L3N2Zz4=");
-}
 sup a,
 a.reversefootnote {
   padding-left: 0 !important;
@@ -336,12 +341,19 @@ a.reversefootnote::before,
   height: 0 !important;
   background-image: none !important;
 }
-/* 包裹图片的链接（如 README 徽章）不显示链接图标，与 GitHub 一致 */
-#write a:has(img) {
-  padding-left: 0 !important;
+/*
+ * 正文链接与 GitHub 一致：GitHub 链接色，字号与字重跟随上下文（标题里的链接不再被缩成 16px），
+ * 不再显示前置链接图标，悬停只加下划线、不变色。:where() 保持低优先级，脚注、目录等专门样式仍然生效。
+ */
+:where(#write) a {
+  font-weight: inherit;
+  font-size: inherit;
+  color: var(--link-color);
+  text-underline-offset: 0.2rem;
 }
-#write a:has(img)::before {
-  display: none !important;
+:where(#write) a:hover,
+#write .md-link a:hover {
+  color: var(--link-color);
 }
 a:hover {
   color: var(--color-2);
@@ -504,7 +516,8 @@ li > p {
 img:where(:not(.md-htmlblock-container img)),
 .md-htmlblock-container section img,
 span.md-image {
-  margin: 16px auto 0 auto !important;
+  /* 不再额外加 16px 上外边距（此前图片和外层 span 各加一次，图片上方约 51px、下方 31px），间距交给段落本身 */
+  margin: 0 auto !important;
   border-radius: 8px !important;
   border: none !important;
   color: var(--md-char-color);
@@ -570,13 +583,22 @@ span.md-image span.md-image-pick-file-btn {
 .md-htmlblock-container section span > img:last-of-type {
   margin-bottom: 0 !important;
 }
-.typora-export #write > section:has(img):hover,
-.md-htmlblock-container > section:has(img):hover{
+/*
+ * 悬停时用外扩阴影画出背景面板，不改变内边距：此前悬停加 16px padding，网格可用宽度变小，图片会整体缩小。
+ * 包裹 section 的 HTML 块容器不裁剪溢出，否则外扩部分会被 overflow 裁掉。
+ */
+.typora-export #write > section:has(img),
+.md-htmlblock-container > section:has(img) {
   border-radius: 8px;
+  transition: background-color .3s, box-shadow .3s;
+}
+.typora-export #write > section:has(img):hover,
+.md-htmlblock-container > section:has(img):hover {
   background: var(--bg-color2);
-  padding: 16px;
-  transition: padding .3s linear;
-  -webkit-transition: padding .3s linear;
+  box-shadow: 0 0 0 16px var(--bg-color2);
+}
+.md-htmlblock-container:has(> section img) {
+  overflow: visible;
 }
 
 /*
@@ -652,18 +674,23 @@ pre .CodeMirror-gutters {
  * blockquote
  * ------------------------
 */
+/*
+ * 对齐 GitHub（GFM）：普通引用为灰色竖线 + 弱化文字，无背景与圆角；
+ * 提示块（> [!NOTE] 等）为彩色竖线 + 同色标题行（图标 + 类型名），正文保持正文颜色。
+ */
 blockquote,
 .md-alert {
   margin-top: 16px !important;
   margin-bottom: 0;
-  padding: 16px;
-  background: var(--color-1-0-b);
-  box-sizing: border-box;
-  border-radius: 8px;
-  border-left: 4px solid var(--color-1);
-  border-right: 0.1px solid transparent;
-  border-bottom: 0.1px solid transparent;
-  border-top: 0.1px solid transparent;
+  border-left: 0.25em solid var(--quote-border-color);
+}
+blockquote {
+  padding: 0 1em;
+  color: var(--quote-text-color);
+}
+.md-alert {
+  padding: 8px 16px;
+  color: inherit;
 }
 blockquote > *:first-child,
 .md-alert > *:first-child {
@@ -673,45 +700,65 @@ blockquote > *:last-child,
 .md-alert > *:last-child {
   margin-bottom: 0 !important;
 }
+/* 标题行与 GitHub 一样独占一行（图标 + 类型名），与正文间隔 16px */
+.md-alert .md-alert-text {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 1em;
+  font-weight: 600;
+  line-height: 1;
+}
+.md-alert .md-alert-text-container {
+  display: inline-flex;
+  align-items: center;
+}
+.md-alert .md-alert-text svg {
+  top: 0;
+  margin-right: 8px;
+}
+/* 标题已独占一行：收起其后的软换行（编辑器，同 Typora 对 <br/> 后软换行的处理）和 <br>（导出），避免多出空行 */
+.md-alert .md-alert-text + .md-softbreak {
+  display: inline-block;
+  width: 0;
+  white-space: normal;
+}
+.md-alert .md-alert-text + br {
+  display: none;
+}
+/* [!NOTE] 后空一行再写正文时，标题独占一个段落：去掉段落的负下边距，保持与正文 16px 间隔 */
+.md-alert > p:has(> .md-alert-text:only-child) {
+  margin-bottom: 0;
+}
 .md-alert.md-alert-note {
-  border-left-color: var(--color-1);
-  background: var(--color-1-0-b);
-  color: var(--color-1);
+  border-left-color: var(--alert-note-color);
 }
-.md-alert.md-alert-note .md-alert-text-note {
-  color: var(--color-1);
-}
-.md-alert.md-alert-caution {
-  border-left-color: var(--color-2);
-  background: var(--color-2-0-b);
-  color: var(--color-2);
-}
-.md-alert.md-alert-caution .md-alert-text-caution {
-  color: var(--color-2);
+.md-alert.md-alert-note .md-alert-text {
+  color: var(--alert-note-color);
 }
 .md-alert.md-alert-tip {
-  border-left-color: var(--color-3);
-  background: var(--color-3-0-b);
-  color: var(--color-3);
+  border-left-color: var(--alert-tip-color);
 }
-.md-alert.md-alert-tip .md-alert-text-tip {
-  color: var(--color-3);
+.md-alert.md-alert-tip .md-alert-text {
+  color: var(--alert-tip-color);
 }
 .md-alert.md-alert-important {
-  border-left-color: var(--color-4);
-  background: var(--color-4-0-b);
-  color: var(--color-4);
+  border-left-color: var(--alert-important-color);
 }
-.md-alert.md-alert-important .md-alert-text-important {
-  color: var(--color-4);
+.md-alert.md-alert-important .md-alert-text {
+  color: var(--alert-important-color);
 }
 .md-alert.md-alert-warning {
-  border-left-color: var(--color-5);
-  background: var(--color-5-0-b);
-  color: var(--color-5);
+  border-left-color: var(--alert-warning-color);
 }
-.md-alert.md-alert-warning .md-alert-text-warning {
-  color: var(--color-5);
+.md-alert.md-alert-warning .md-alert-text {
+  color: var(--alert-warning-color);
+}
+.md-alert.md-alert-caution {
+  border-left-color: var(--alert-caution-color);
+}
+.md-alert.md-alert-caution .md-alert-text {
+  color: var(--alert-caution-color);
 }
 
 /*
@@ -785,7 +832,6 @@ table,
 figure {
   width: 100%;
   margin-bottom: 0;
-  border-radius: 8px;
   padding: 0 !important;
   border-collapse: separate;
   border-spacing: 0;
@@ -793,10 +839,25 @@ figure {
 figure {
   margin-top: 16px !important;
 }
+/*
+ * 圆角只加在表格上。Typora 给包住表格的 figure 设了 overflow-x: auto，若 figure 也带圆角，
+ * 会沿着与表格外边框完全相同的弧线裁剪，四个角的 1px 边线被削掉大半、几乎看不见。
+ */
 table {
   margin-top: 0;
   border: 1px solid var(--border-color) !important;
+  border-radius: 8px;
   overflow: hidden;
+}
+/*
+ * 正文表格的外框改用 outline 绘制。缩放较低时 1px 的圆角弧线只有约一个屏幕像素宽、以半透明方式绘制，
+ * 而表头与斑马纹的单元格背景沿同一条弧线裁剪、画在边框之上，四个角的边线会被盖得几乎看不见
+ * （放大到 170% 左右才恢复）。outline 在子元素之后绘制，不会被单元格背景覆盖，并同样跟随 8px 圆角。
+ */
+#write table {
+  border: none !important;
+  outline: 1px solid var(--border-color);
+  outline-offset: -1px;
 }
 table thead tr th {
   background: var(--bg-color2);
@@ -808,7 +869,9 @@ table tbody tr:nth-child(odd) td {
   background: var(--bg-color);
 }
 table tr th, table tr td {
-  padding: 10px !important;
+  /* 比原来的 10px / 行高 1.6 收紧，介于原样式与 GitHub（6px 13px / 1.5）之间 */
+  padding: 8px 12px !important;
+  line-height: 1.5;
   white-space: pre-wrap !important;
 }
 table tr td,
@@ -2171,8 +2234,8 @@ li > .outline-item:hover::before,
 
 /*  #megamenu-content, #megamenu-menu-sidebar */
 .unibody-window #megamenu-menu-sidebar {
-  --bg-color: #1b1b1f;
-  --bg-color2: rgb(40, 42, 50);
+  --bg-color: #121214;
+  --bg-color2: #1f2026;
   --border-color: rgb(60, 62, 70);
   background: var(--bg-color);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
@@ -3036,8 +3099,8 @@ body.typora-export {
 @media (prefers-color-scheme: dark) {
   /* colors */
   :root {
-    --bg-color: #1b1b1f;
-    --bg-color2: rgb(40, 42, 50);
+    --bg-color: #121214;
+    --bg-color2: #1f2026;
 
     --text-color: #d0d0d0;
     --text-grey: rgb(70, 75, 80);
@@ -3061,6 +3124,15 @@ body.typora-export {
 
     --color-5-0-a: rgba(227, 15, 46, 0.3);
     --color-5-0-b: rgba(227, 15, 46, 0.12);
+    /* 引用与提示块（与 GitHub 配色一致） */
+    --link-color: #4493f8;
+    --quote-text-color: #9198a1;
+    --quote-border-color: #3d444d;
+    --alert-note-color: #4493f8;
+    --alert-tip-color: #3fb950;
+    --alert-important-color: #ab7df8;
+    --alert-warning-color: #d29922;
+    --alert-caution-color: #f85149;
 
     --md-char-color: #667c89ff;
     --codeblock-bg-color: var(--bg-color2);
